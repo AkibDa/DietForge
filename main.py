@@ -129,7 +129,6 @@ def calcount(BMR, active, weight):
    else:
       print("Choose correctly")
 
-
 if(gender == 'M'):
     BMR = 10 * weight + 6.25 * height - 5 * age + 5
 else:
