@@ -3,14 +3,6 @@ import math
 
 print("Welcome to Diet_Forge! ")
 
-name = input("Enter your name: ")
-weight = int(input("Enter your weight(in kg): "))
-height = int(input("Enter your height(in cm): "))
-age = int(input("Enter your age: "))
-gender = input("Enter your gender(M for male & F for female): ").capitalize()
-active = input("How active are you(Sedentary, Lightly, Moderately, Very, Super)? ").capitalize()
-veg = input("Are you a vegetarian or not(Y for yes, N for no)? ").capitalize()
-
 df = pd.read_csv("Data/diet.csv")
 breakfast_df = df[df['Meal_Type'] == 'Breakfast']
 lunch_df = df[df['Meal_Type'] == 'Lunch']
@@ -239,4 +231,15 @@ def checker(height,weight,age,gender,veg,active):
    else:
       calcount(BMR,active,weight,veg)
 
-checker(height,weight,age,gender,veg,active)
+def main():
+   name = input("Enter your name: ")
+   weight = int(input("Enter your weight(in kg): "))
+   height = int(input("Enter your height(in cm): "))
+   age = int(input("Enter your age: "))
+   gender = input("Enter your gender(M for male & F for female): ").capitalize()
+   active = input("How active are you(Sedentary, Lightly, Moderately, Very, Super)? ").capitalize()
+   veg = input("Are you a vegetarian or not(Y for yes, N for no)? ").capitalize()
+   checker(height,weight,age,gender,veg,active)
+
+if __name__ == "__main__":
+    main()
