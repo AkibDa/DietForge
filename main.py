@@ -40,7 +40,61 @@ def diet_Normal(total_cal,weight):
    print("----------------------------------------------------------------------")
    print(dinner_food_df)
    print("----------------------------------------------------------------------")
+   print("Thanks for using Diet_Forge!")
 
+def diet_Bulk(total_cal,weight):
+   protein = 2 * weight
+   breakfast = total_cal * 0.173
+   lunch = total_cal * 0.466
+   dinner = total_cal * 0.24
+   breakfast_protein_cal = breakfast * 0.30
+   breakfast_carb_cal = breakfast * 0.50
+   breakfast_carb = breakfast_carb_cal % 4
+   lunch_protein_cal = lunch * 0.30
+   lunch_carb_cal = lunch * 0.50
+   lunch_carb = lunch_carb_cal % 4
+   dinner_protein_cal = dinner * 0.30
+   dinner_carb_cal = dinner * 0.50
+   dinner_carb = dinner_carb_cal % 4
+   breakfast_food_df = breakfast_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < breakfast_protein_cal) & (df['Fiber (g)'] <= breakfast_carb) & (df['Calories (kcal)'] < breakfast_carb_cal)]
+   lunch_food_df = lunch_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < lunch_protein_cal) & (df['Fiber (g)'] <= lunch_carb) & (df['Calories (kcal)'] < lunch_carb_cal)]
+   dinner_food_df = dinner_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < dinner_protein_cal) & (df['Fiber (g)'] <= dinner_carb) & (df['Calories (kcal)'] < dinner_carb_cal)]
+
+   print("----------------------------------------------------------------------")
+   print(breakfast_food_df)
+   print("----------------------------------------------------------------------") 
+   print(lunch_food_df)
+   print("----------------------------------------------------------------------")
+   print(dinner_food_df)
+   print("----------------------------------------------------------------------")
+   print("Thanks for using Diet_Forge!")
+
+def diet_Cut(total_cal,weight):
+   protein = 2 * weight
+   breakfast = total_cal * 0.173
+   lunch = total_cal * 0.466
+   dinner = total_cal * 0.24
+   breakfast_protein_cal = breakfast * 0.30
+   breakfast_carb_cal = breakfast * 0.50
+   breakfast_carb = breakfast_carb_cal % 4
+   lunch_protein_cal = lunch * 0.30
+   lunch_carb_cal = lunch * 0.50
+   lunch_carb = lunch_carb_cal % 4
+   dinner_protein_cal = dinner * 0.30
+   dinner_carb_cal = dinner * 0.50
+   dinner_carb = dinner_carb_cal % 4
+   breakfast_food_df = breakfast_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < breakfast_protein_cal) & (df['Fiber (g)'] <= breakfast_carb) & (df['Calories (kcal)'] < breakfast_carb_cal)]
+   lunch_food_df = lunch_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < lunch_protein_cal) & (df['Fiber (g)'] <= lunch_carb) & (df['Calories (kcal)'] < lunch_carb_cal)]
+   dinner_food_df = dinner_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < dinner_protein_cal) & (df['Fiber (g)'] <= dinner_carb) & (df['Calories (kcal)'] < dinner_carb_cal)]
+
+   print("----------------------------------------------------------------------")
+   print(breakfast_food_df)
+   print("----------------------------------------------------------------------") 
+   print(lunch_food_df)
+   print("----------------------------------------------------------------------")
+   print(dinner_food_df)
+   print("----------------------------------------------------------------------")
+   print("Thanks for using Diet_Forge!")
 
 def calcount(BMR, active, weight):
    total_cal = 0
@@ -64,7 +118,16 @@ def calcount(BMR, active, weight):
    cut_cal = total_cal - 500
    print(f"Your bulking calorie should be {math.trunc(bulk_cal)}")
    print(f"Your cutting calorie should be {math.trunc(cut_cal)}")
-   diet_Normal(total_cal,weight)
+
+   choice = input("You want a normal diet or bulking diet or cutting diet? ").capitalize()
+   if(choice == 'Normal' or choice == 'N'):
+      diet_Normal(total_cal,weight)
+   elif(choice == 'Bulk' or choice == 'B'):
+      diet_Bulk(bulk_cal,weight)
+   elif(choice == 'Cut' or choice == 'C'):
+      diet_Cut(total_cal,weight)
+   else:
+      print("Choose correctly")
 
 
 if(gender == 'M'):
