@@ -13,7 +13,6 @@ active = input("How active are you(Sedentary, Lightly, Moderately, Very, Super)?
 df = pd.read_csv("Data/diet.csv")
 breakfast_df = df[df['Meal_Type'] == 'Breakfast']
 lunch_df = df[df['Meal_Type'] == 'Lunch']
-snack_df = df[df['Meal_Type'] == 'Snack']
 dinner_df = df[df['Meal_Type'] == 'Dinner']
 
 def diet(total_cal,weight):
@@ -22,12 +21,20 @@ def diet(total_cal,weight):
    lunch = total_cal * 0.466
    dinner = total_cal * 0.24
    breakfast_protein_cal = breakfast * 0.30
-   carbb_cal = total_cal * 0.50
-   carbb = carbb_cal % 4
+   breakfast_carb_cal = breakfast * 0.50
+   breakfast_carb = breakfast_carb_cal % 4
+   lunch_protein_cal = lunch * 0.30
+   lunch_carb_cal = lunch * 0.50
+   lunch_carb = lunch_carb_cal % 4
+   dinner_protein_cal = dinner * 0.30
+   dinner_carb_cal = dinner * 0.50
+   dinner_carb = dinner_carb_cal % 4
    breakfast_protein_df = breakfast_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < breakfast_protein_cal)]
-   breakfast_carb_df = breakfast_df.loc[(df['Fiber (g)'] <= carbb) & (df['Calories (kcal)'] < carbb_cal)]
-   proteinl_df = lunch_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < protein_cal)]
-   carbl_df = lunch_df.loc[(df['Fiber (g)'] <= carb) & (df['Calories (kcal)'] < carb_cal)]
+   breakfast_carb_df = breakfast_df.loc[(df['Fiber (g)'] <= breakfast_carb) & (df['Calories (kcal)'] < breakfast_carb_cal)]
+   lunch_protein_df = lunch_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < lunch_protein_cal)]
+   lunch_carb_df = lunch_df.loc[(df['Fiber (g)'] <= lunch_carb) & (df['Calories (kcal)'] < lunch_carb_cal)]
+   dinner_protein_df = dinner_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < dinner_protein_cal)]
+   dinner_carb_df = dinner_df.loc[(df['Fiber (g)'] <= dinner_carb) & (df['Calories (kcal)'] < dinner_carb_cal)]
 
 
 def calcount(BMR, active, weight):
