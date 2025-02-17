@@ -15,7 +15,7 @@ breakfast_df = df[df['Meal_Type'] == 'Breakfast']
 lunch_df = df[df['Meal_Type'] == 'Lunch']
 dinner_df = df[df['Meal_Type'] == 'Dinner']
 
-def diet(total_cal,weight):
+def diet_Normal(total_cal,weight):
    protein = 2 * weight
    breakfast = total_cal * 0.173
    lunch = total_cal * 0.466
@@ -35,6 +35,20 @@ def diet(total_cal,weight):
    lunch_carb_df = lunch_df.loc[(df['Fiber (g)'] <= lunch_carb) & (df['Calories (kcal)'] < lunch_carb_cal)]
    dinner_protein_df = dinner_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < dinner_protein_cal)]
    dinner_carb_df = dinner_df.loc[(df['Fiber (g)'] <= dinner_carb) & (df['Calories (kcal)'] < dinner_carb_cal)]
+
+   print("----------------------------------------------------------------------")
+   print(breakfast_protein_df)
+   print("----------------------------------------------------------------------")
+   print(breakfast_carb_df)
+   print("----------------------------------------------------------------------")
+   print(lunch_protein_df)
+   print("----------------------------------------------------------------------")
+   print(lunch_carb_df)
+   print("----------------------------------------------------------------------")
+   print(dinner_protein_df)
+   print("----------------------------------------------------------------------")
+   print(dinner_carb_df)
+   print("----------------------------------------------------------------------")
 
 
 def calcount(BMR, active, weight):
@@ -59,7 +73,7 @@ def calcount(BMR, active, weight):
    cut_cal = total_cal - 500
    print(f"Your bulking calorie should be {math.trunc(bulk_cal)}")
    print(f"Your cutting calorie should be {math.trunc(cut_cal)}")
-   diet(total_cal,weight)
+   diet_Normal(total_cal,weight)
 
 
 if(gender == 'M'):
