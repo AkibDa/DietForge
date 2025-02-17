@@ -1,3 +1,4 @@
+import pandas as pd
 import math
 
 print("Welcome to Diet_Forge! ")
@@ -9,6 +10,11 @@ age = int(input("Enter your age: "))
 gender = input("Enter your gender(M for male & F for female): ").capitalize()
 active = input("How active are you(Sedentary, Lightly, Moderately, Very, Super)? ").capitalize()
 
+df = pd.read_csv("Data/diet.csv")
+breakfast_df = df[df['Meal_Type'] == 'Breakfast']
+lunch_df = df[df['Meal_Type'] == 'Lunch']
+snack_df = df[df['Meal_Type'] == 'Snack']
+dinner_df = df[df['Meal_Type'] == 'Dinner']
 
 def calcount(BMR, active):
    total_cal = 0
@@ -43,3 +49,4 @@ if(age<15):
   print("Too young for a diet")
 else:
   calcount(BMR,active)
+
