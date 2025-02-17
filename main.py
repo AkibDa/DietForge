@@ -9,6 +9,7 @@ height = int(input("Enter your height(in cm): "))
 age = int(input("Enter your age: "))
 gender = input("Enter your gender(M for male & F for female): ").capitalize()
 active = input("How active are you(Sedentary, Lightly, Moderately, Very, Super)? ").capitalize()
+veg = input("Are you a vegetarian or not(Y for yes, N for no)? ").capitalize()
 
 df = pd.read_csv("Data/diet.csv")
 breakfast_df = df[df['Meal_Type'] == 'Breakfast']
@@ -128,6 +129,8 @@ def calcount(BMR, active, weight):
       diet_Cut(total_cal,weight)
    else:
       print("Choose correctly")
+
+if(veg == 'Y')
 
 if(gender == 'M'):
     BMR = 10 * weight + 6.25 * height - 5 * age + 5
