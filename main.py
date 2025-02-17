@@ -29,25 +29,16 @@ def diet_Normal(total_cal,weight):
    dinner_protein_cal = dinner * 0.30
    dinner_carb_cal = dinner * 0.50
    dinner_carb = dinner_carb_cal % 4
-   breakfast_protein_df = breakfast_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < breakfast_protein_cal)]
-   breakfast_carb_df = breakfast_df.loc[(df['Fiber (g)'] <= breakfast_carb) & (df['Calories (kcal)'] < breakfast_carb_cal)]
-   lunch_protein_df = lunch_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < lunch_protein_cal)]
-   lunch_carb_df = lunch_df.loc[(df['Fiber (g)'] <= lunch_carb) & (df['Calories (kcal)'] < lunch_carb_cal)]
-   dinner_protein_df = dinner_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < dinner_protein_cal)]
-   dinner_carb_df = dinner_df.loc[(df['Fiber (g)'] <= dinner_carb) & (df['Calories (kcal)'] < dinner_carb_cal)]
+   breakfast_food_df = breakfast_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < breakfast_protein_cal) & (df['Fiber (g)'] <= breakfast_carb) & (df['Calories (kcal)'] < breakfast_carb_cal)]
+   lunch_food_df = lunch_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < lunch_protein_cal) & (df['Fiber (g)'] <= lunch_carb) & (df['Calories (kcal)'] < lunch_carb_cal)]
+   dinner_food_df = dinner_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < dinner_protein_cal) & (df['Fiber (g)'] <= dinner_carb) & (df['Calories (kcal)'] < dinner_carb_cal)]
 
    print("----------------------------------------------------------------------")
-   print(breakfast_protein_df)
+   print(breakfast_food_df)
+   print("----------------------------------------------------------------------") 
+   print(lunch_food_df)
    print("----------------------------------------------------------------------")
-   print(breakfast_carb_df)
-   print("----------------------------------------------------------------------")
-   print(lunch_protein_df)
-   print("----------------------------------------------------------------------")
-   print(lunch_carb_df)
-   print("----------------------------------------------------------------------")
-   print(dinner_protein_df)
-   print("----------------------------------------------------------------------")
-   print(dinner_carb_df)
+   print(dinner_food_df)
    print("----------------------------------------------------------------------")
 
 
