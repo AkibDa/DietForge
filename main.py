@@ -18,8 +18,16 @@ dinner_df = df[df['Meal_Type'] == 'Dinner']
 
 def diet(total_cal,weight):
    protein = 2 * weight
-   protein_cal = total_cal * 0.30
-   protein_df = breakfast_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < protein_cal)]
+   breakfast = total_cal * 0.173
+   lunch = total_cal * 0.466
+   dinner = total_cal * 0.24
+   breakfast_protein_cal = breakfast * 0.30
+   carbb_cal = total_cal * 0.50
+   carbb = carbb_cal % 4
+   breakfast_protein_df = breakfast_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < breakfast_protein_cal)]
+   breakfast_carb_df = breakfast_df.loc[(df['Fiber (g)'] <= carbb) & (df['Calories (kcal)'] < carbb_cal)]
+   proteinl_df = lunch_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < protein_cal)]
+   carbl_df = lunch_df.loc[(df['Fiber (g)'] <= carb) & (df['Calories (kcal)'] < carb_cal)]
 
 
 def calcount(BMR, active, weight):
