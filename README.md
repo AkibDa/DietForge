@@ -18,9 +18,6 @@ git clone https://github.com/AkibDa/DietForge.git
 # Navigate to the project directory
 cd DietForge
 
-# Install dependencies
-pip install -r requirements.txt
-
 # Run the application
 python main.py
 ```
