@@ -233,12 +233,16 @@ def checker(height,weight,age,gender,veg,active):
 
 def main():
    name = input("Enter your name: ")
-   weight = int(input("Enter your weight(in kg): "))
-   height = int(input("Enter your height(in cm): "))
-   age = int(input("Enter your age: "))
-   gender = input("Enter your gender(M for male & F for female): ").capitalize()
-   active = input("How active are you(Sedentary, Lightly, Moderately, Very, Super)? ").capitalize()
-   veg = input("Are you a vegetarian or not(Y for yes, N for no)? ").capitalize()
+   try:
+      weight = int(input("Enter your weight(in kg): "))
+      height = int(input("Enter your height(in cm): "))
+      age = int(input("Enter your age: "))
+      gender = input("Enter your gender(M for male & F for female): ").capitalize()
+      active = input("How active are you(Sedentary, Lightly, Moderately, Very, Super)? ").capitalize()
+      veg = input("Are you a vegetarian or not(Y for yes, N for no)? ").capitalize()
+   except:
+      print("U have entered in wrong format.")
+      
    checker(height,weight,age,gender,veg,active)
 
 if __name__ == "__main__":
