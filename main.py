@@ -4,6 +4,7 @@ import math
 print("Welcome to Diet_Forge! ")
 
 df = pd.read_csv("Data/diet.csv")
+df = df.drop(columns=['Date', 'User_ID'])
 breakfast_df = df[df['Meal_Type'] == 'Breakfast']
 lunch_df = df[df['Meal_Type'] == 'Lunch']
 dinner_df = df[df['Meal_Type'] == 'Dinner']
@@ -174,18 +175,21 @@ def calcount(BMR, active, weight, veg):
    total_cal = 0
    bulk_cal = 0
    cut_cal = 0
-   if(active == "Sedentary" or active == "Sed"):
-      total_cal = BMR * 1.20
-   elif(active == "Lightly" or active == "L"):
-      total_cal = BMR * 1.375
-   elif(active == "Moderately" or active == "M"):
-      total_cal = BMR * 1.55
-   elif(active == "Very" or active == "V"):
-      total_cal = BMR * 1.725
-   elif(active == "Super" or active == "Sup"):
-      total_cal = BMR * 1.9
-   else :
-      print("Enter correctly")
+   try:
+      if(active == "Sedentary" or active == "Sed"):
+         total_cal = BMR * 1.20
+      elif(active == "Lightly" or active == "L"):
+         total_cal = BMR * 1.375
+      elif(active == "Moderately" or active == "M"):
+         total_cal = BMR * 1.55
+      elif(active == "Very" or active == "V"):
+         total_cal = BMR * 1.725
+      elif(active == "Super" or active == "Sup"):
+         total_cal = BMR * 1.9
+      else :
+         total_cal = BMR
+   except:
+      print("U have entered something wrong")
 
    print(f"Your calorie intake should be {math.trunc(total_cal)}")
    bulk_cal = total_cal + 500
@@ -240,9 +244,9 @@ def main():
       gender = input("Enter your gender(M for male & F for female): ").capitalize()
       active = input("How active are you(Sedentary, Lightly, Moderately, Very, Super)? ").capitalize()
       veg = input("Are you a vegetarian or not(Y for yes, N for no)? ").capitalize()
-   except:
+   except ValueError:
       print("U have entered in wrong format.")
-      
+
    checker(height,weight,age,gender,veg,active)
 
 if __name__ == "__main__":
