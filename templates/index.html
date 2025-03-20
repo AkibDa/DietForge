@@ -12,13 +12,14 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         .container {
-            max-width: 800px;
+            max-width: 1000px;
             margin-top: 2rem;
         }
         .card {
             border: none;
             border-radius: 15px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
         }
         .card-header {
             background-color: #4CAF50;
@@ -40,6 +41,7 @@
             border-color: #4CAF50;
             padding: 0.75rem 2rem;
             border-radius: 8px;
+            font-weight: 600;
         }
         .btn-primary:hover {
             background-color: #45a049;
@@ -49,27 +51,95 @@
             display: none;
             margin-top: 2rem;
         }
+        .calories-card {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .calories-card h4 {
+            color: white;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+        .calories-card .h3 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0;
+        }
+        .calories-card h5 {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
         .meal-card {
-            margin-bottom: 1rem;
-            border-radius: 10px;
+            background: white;
+            border-radius: 15px;
             overflow: hidden;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         .meal-header {
-            background-color: #4CAF50;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
             color: white;
-            padding: 0.75rem;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .meal-header h5 {
+            margin: 0;
+            font-weight: 600;
+        }
+        .meal-header i {
+            font-size: 1.5rem;
         }
         .table {
             margin-bottom: 0;
         }
         .table th {
             background-color: #f8f9fa;
+            font-weight: 600;
+            color: #4CAF50;
         }
-        .calories-card {
+        .table td {
+            vertical-align: middle;
+        }
+        .nutrition-badge {
             background-color: #e8f5e9;
-            border-radius: 10px;
+            color: #4CAF50;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .food-item {
+            font-weight: 500;
+            color: #333;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+        .loading i {
+            font-size: 3rem;
+            color: #4CAF50;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .error-message {
+            display: none;
+            background-color: #ffebee;
+            color: #c62828;
             padding: 1rem;
-            margin-bottom: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
         }
     </style>
 </head>
@@ -141,9 +211,16 @@
             </div>
         </div>
 
+        <div class="loading">
+            <i class="fas fa-spinner"></i>
+            <p class="mt-3">Calculating your personalized diet plan...</p>
+        </div>
+
+        <div class="error-message" id="errorMessage"></div>
+
         <div id="results" class="results-section">
             <div class="calories-card">
-                <h4 class="mb-3">Recommended Calorie Intake</h4>
+                <h4 class="text-center mb-4">Recommended Calorie Intake</h4>
                 <div class="row">
                     <div class="col-md-4">
                         <div class="text-center">
@@ -168,7 +245,8 @@
 
             <div class="meal-card">
                 <div class="meal-header">
-                    <h5 class="mb-0"><i class="fas fa-sun me-2"></i>Breakfast</h5>
+                    <i class="fas fa-sun"></i>
+                    <h5>Breakfast</h5>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-hover">
@@ -187,7 +265,8 @@
 
             <div class="meal-card">
                 <div class="meal-header">
-                    <h5 class="mb-0"><i class="fas fa-cloud-sun me-2"></i>Lunch</h5>
+                    <i class="fas fa-cloud-sun"></i>
+                    <h5>Lunch</h5>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-hover">
@@ -206,7 +285,8 @@
 
             <div class="meal-card">
                 <div class="meal-header">
-                    <h5 class="mb-0"><i class="fas fa-moon me-2"></i>Dinner</h5>
+                    <i class="fas fa-moon"></i>
+                    <h5>Dinner</h5>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-hover">
@@ -228,6 +308,11 @@
     <script>
         document.getElementById('dietForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+            
+            // Show loading, hide results and error
+            document.querySelector('.loading').style.display = 'block';
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'none';
             
             const formData = {
                 weight: parseFloat(document.getElementById('weight').value),
@@ -261,14 +346,18 @@
                     updateMealTable('lunchTable', data.meal_plan.lunch);
                     updateMealTable('dinnerTable', data.meal_plan.dinner);
 
-                    // Show results section
+                    // Hide loading, show results
+                    document.querySelector('.loading').style.display = 'none';
                     document.getElementById('results').style.display = 'block';
                 } else {
-                    alert(data.error || 'An error occurred');
+                    throw new Error(data.error || 'An error occurred');
                 }
             } catch (error) {
-                alert('An error occurred while calculating your diet plan');
-                console.error(error);
+                // Hide loading, show error
+                document.querySelector('.loading').style.display = 'none';
+                const errorMessage = document.getElementById('errorMessage');
+                errorMessage.textContent = error.message;
+                errorMessage.style.display = 'block';
             }
         });
 
@@ -279,10 +368,10 @@
             meals.forEach(meal => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${meal['Food_Item']}</td>
-                    <td>${Math.round(meal['Calories (kcal)'])}</td>
-                    <td>${Math.round(meal['Protein (g)'])}g</td>
-                    <td>${Math.round(meal['Fiber (g)'])}g</td>
+                    <td class="food-item">${meal['Food_Item']}</td>
+                    <td><span class="nutrition-badge">${Math.round(meal['Calories (kcal)'])} kcal</span></td>
+                    <td><span class="nutrition-badge">${Math.round(meal['Protein (g)'])}g</span></td>
+                    <td><span class="nutrition-badge">${Math.round(meal['Fiber (g)'])}g</span></td>
                 `;
                 table.appendChild(row);
             });
