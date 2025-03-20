@@ -1,253 +1,260 @@
+from flask import Flask, render_template, request, jsonify
 import pandas as pd
 import math
 
-print("Welcome to Diet_Forge! ")
+app = Flask(__name__)
 
+# Load and prepare the data
 df = pd.read_csv("Data/diet.csv")
 df = df.drop(columns=['Date', 'User_ID'])
 breakfast_df = df[df['Meal_Type'] == 'Breakfast']
 lunch_df = df[df['Meal_Type'] == 'Lunch']
 dinner_df = df[df['Meal_Type'] == 'Dinner']
 
-def diet_Normal_NonVeg(total_cal,weight):
-   protein = 2 * weight
-   breakfast = total_cal * 0.173
-   lunch = total_cal * 0.466
-   dinner = total_cal * 0.24
-   breakfast_protein_cal = breakfast * 0.30
-   breakfast_carb_cal = breakfast * 0.50
-   breakfast_carb = breakfast_carb_cal % 4
-   lunch_protein_cal = lunch * 0.30
-   lunch_carb_cal = lunch * 0.50
-   lunch_carb = lunch_carb_cal % 4
-   dinner_protein_cal = dinner * 0.30
-   dinner_carb_cal = dinner * 0.50
-   dinner_carb = dinner_carb_cal % 4
-   breakfast_food_df = breakfast_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < breakfast_protein_cal) & (df['Fiber (g)'] <= breakfast_carb) & (df['Calories (kcal)'] < breakfast_carb_cal)]
-   lunch_food_df = lunch_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < lunch_protein_cal) & (df['Fiber (g)'] <= lunch_carb) & (df['Calories (kcal)'] < lunch_carb_cal)]
-   dinner_food_df = dinner_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < dinner_protein_cal) & (df['Fiber (g)'] <= dinner_carb) & (df['Calories (kcal)'] < dinner_carb_cal)]
+def diet_Normal_NonVeg(total_cal, weight):
+    protein = 2 * weight
+    breakfast = total_cal * 0.173
+    lunch = total_cal * 0.466
+    dinner = total_cal * 0.24
+    breakfast_protein_cal = breakfast * 0.30
+    breakfast_carb_cal = breakfast * 0.50
+    breakfast_carb = breakfast_carb_cal % 4
+    lunch_protein_cal = lunch * 0.30
+    lunch_carb_cal = lunch * 0.50
+    lunch_carb = lunch_carb_cal % 4
+    dinner_protein_cal = dinner * 0.30
+    dinner_carb_cal = dinner * 0.50
+    dinner_carb = dinner_carb_cal % 4
+    
+    breakfast_food_df = breakfast_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < breakfast_protein_cal) & (df['Fiber (g)'] <= breakfast_carb) & (df['Calories (kcal)'] < breakfast_carb_cal)]
+    lunch_food_df = lunch_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < lunch_protein_cal) & (df['Fiber (g)'] <= lunch_carb) & (df['Calories (kcal)'] < lunch_carb_cal)]
+    dinner_food_df = dinner_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < dinner_protein_cal) & (df['Fiber (g)'] <= dinner_carb) & (df['Calories (kcal)'] < dinner_carb_cal)]
+    
+    # Remove duplicates based on Food_Item
+    breakfast_food_df = breakfast_food_df.drop_duplicates(subset=['Food_Item'])
+    lunch_food_df = lunch_food_df.drop_duplicates(subset=['Food_Item'])
+    dinner_food_df = dinner_food_df.drop_duplicates(subset=['Food_Item'])
+    
+    return {
+        'breakfast': breakfast_food_df.to_dict('records'),
+        'lunch': lunch_food_df.to_dict('records'),
+        'dinner': dinner_food_df.to_dict('records')
+    }
 
-   print("----------------------------------------------------------------------")
-   print(breakfast_food_df)
-   print("----------------------------------------------------------------------") 
-   print(lunch_food_df)
-   print("----------------------------------------------------------------------")
-   print(dinner_food_df)
-   print("----------------------------------------------------------------------")
-   print("Thanks for using Diet_Forge!")
+def diet_Normal_Veg(total_cal, weight):
+    protein = 2 * weight
+    breakfast = total_cal * 0.173
+    lunch = total_cal * 0.466
+    dinner = total_cal * 0.24
+    breakfast_protein_cal = breakfast * 0.30
+    breakfast_carb_cal = breakfast * 0.50
+    breakfast_carb = breakfast_carb_cal % 4
+    lunch_protein_cal = lunch * 0.30
+    lunch_carb_cal = lunch * 0.50
+    lunch_carb = lunch_carb_cal % 4
+    dinner_protein_cal = dinner * 0.30
+    dinner_carb_cal = dinner * 0.50
+    dinner_carb = dinner_carb_cal % 4
+    
+    breakfast_food_df = breakfast_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < breakfast_protein_cal) & (df['Fiber (g)'] <= breakfast_carb) & (df['Calories (kcal)'] < breakfast_carb_cal) & (df['Category'] != 'Meat')]
+    lunch_food_df = lunch_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < lunch_protein_cal) & (df['Fiber (g)'] <= lunch_carb) & (df['Calories (kcal)'] < lunch_carb_cal) & (df['Category'] != 'Meat')]
+    dinner_food_df = dinner_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < dinner_protein_cal) & (df['Fiber (g)'] <= dinner_carb) & (df['Calories (kcal)'] < dinner_carb_cal) & (df['Category'] != 'Meat')]
+    
+    return {
+        'breakfast': breakfast_food_df.to_dict('records'),
+        'lunch': lunch_food_df.to_dict('records'),
+        'dinner': dinner_food_df.to_dict('records')
+    }
 
-def diet_Normal_Veg(total_cal,weight):
-   protein = 2 * weight
-   breakfast = total_cal * 0.173
-   lunch = total_cal * 0.466
-   dinner = total_cal * 0.24
-   breakfast_protein_cal = breakfast * 0.30
-   breakfast_carb_cal = breakfast * 0.50
-   breakfast_carb = breakfast_carb_cal % 4
-   lunch_protein_cal = lunch * 0.30
-   lunch_carb_cal = lunch * 0.50
-   lunch_carb = lunch_carb_cal % 4
-   dinner_protein_cal = dinner * 0.30
-   dinner_carb_cal = dinner * 0.50
-   dinner_carb = dinner_carb_cal % 4
-   breakfast_food_df = breakfast_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < breakfast_protein_cal) & (df['Fiber (g)'] <= breakfast_carb) & (df['Calories (kcal)'] < breakfast_carb_cal) & (df['Category'] != 'Meat')]
-   lunch_food_df = lunch_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < lunch_protein_cal) & (df['Fiber (g)'] <= lunch_carb) & (df['Calories (kcal)'] < lunch_carb_cal) & (df['Category'] != 'Meat')]
-   dinner_food_df = dinner_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < dinner_protein_cal) & (df['Fiber (g)'] <= dinner_carb) & (df['Calories (kcal)'] < dinner_carb_cal) & (df['Category'] != 'Meat')]
+def diet_Bulk_NonVeg(total_cal, weight):
+    protein = 2 * weight
+    breakfast = total_cal * 0.173
+    lunch = total_cal * 0.466
+    dinner = total_cal * 0.24
+    breakfast_protein_cal = breakfast * 0.30
+    breakfast_carb_cal = breakfast * 0.50
+    breakfast_carb = breakfast_carb_cal % 4
+    lunch_protein_cal = lunch * 0.30
+    lunch_carb_cal = lunch * 0.50
+    lunch_carb = lunch_carb_cal % 4
+    dinner_protein_cal = dinner * 0.30
+    dinner_carb_cal = dinner * 0.50
+    dinner_carb = dinner_carb_cal % 4
+    
+    breakfast_food_df = breakfast_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < breakfast_protein_cal) & (df['Fiber (g)'] <= breakfast_carb) & (df['Calories (kcal)'] < breakfast_carb_cal)]
+    lunch_food_df = lunch_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < lunch_protein_cal) & (df['Fiber (g)'] <= lunch_carb) & (df['Calories (kcal)'] < lunch_carb_cal)]
+    dinner_food_df = dinner_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < dinner_protein_cal) & (df['Fiber (g)'] <= dinner_carb) & (df['Calories (kcal)'] < dinner_carb_cal)]
+    
+    # Remove duplicates based on Food_Item
+    breakfast_food_df = breakfast_food_df.drop_duplicates(subset=['Food_Item'])
+    lunch_food_df = lunch_food_df.drop_duplicates(subset=['Food_Item'])
+    dinner_food_df = dinner_food_df.drop_duplicates(subset=['Food_Item'])
+    
+    return {
+        'breakfast': breakfast_food_df.to_dict('records'),
+        'lunch': lunch_food_df.to_dict('records'),
+        'dinner': dinner_food_df.to_dict('records')
+    }
 
-   print("----------------------------------------------------------------------")
-   print(breakfast_food_df)
-   print("----------------------------------------------------------------------") 
-   print(lunch_food_df)
-   print("----------------------------------------------------------------------")
-   print(dinner_food_df)
-   print("----------------------------------------------------------------------")
-   print("Thanks for using Diet_Forge!")
+def diet_Bulk_Veg(total_cal, weight):
+    protein = 2 * weight
+    breakfast = total_cal * 0.173
+    lunch = total_cal * 0.466
+    dinner = total_cal * 0.24
+    breakfast_protein_cal = breakfast * 0.30
+    breakfast_carb_cal = breakfast * 0.50
+    breakfast_carb = breakfast_carb_cal % 4
+    lunch_protein_cal = lunch * 0.30
+    lunch_carb_cal = lunch * 0.50
+    lunch_carb = lunch_carb_cal % 4
+    dinner_protein_cal = dinner * 0.30
+    dinner_carb_cal = dinner * 0.50
+    dinner_carb = dinner_carb_cal % 4
+    
+    breakfast_food_df = breakfast_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < breakfast_protein_cal) & (df['Fiber (g)'] <= breakfast_carb) & (df['Calories (kcal)'] < breakfast_carb_cal) & (df['Category'] != 'Meat')]
+    lunch_food_df = lunch_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < lunch_protein_cal) & (df['Fiber (g)'] <= lunch_carb) & (df['Calories (kcal)'] < lunch_carb_cal) & (df['Category'] != 'Meat')]
+    dinner_food_df = dinner_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < dinner_protein_cal) & (df['Fiber (g)'] <= dinner_carb) & (df['Calories (kcal)'] < dinner_carb_cal) & (df['Category'] != 'Meat')]
+    
+    # Remove duplicates based on Food_Item
+    breakfast_food_df = breakfast_food_df.drop_duplicates(subset=['Food_Item'])
+    lunch_food_df = lunch_food_df.drop_duplicates(subset=['Food_Item'])
+    dinner_food_df = dinner_food_df.drop_duplicates(subset=['Food_Item'])
+    
+    return {
+        'breakfast': breakfast_food_df.to_dict('records'),
+        'lunch': lunch_food_df.to_dict('records'),
+        'dinner': dinner_food_df.to_dict('records')
+    }
 
-def diet_Bulk_NonVeg(total_cal,weight):
-   protein = 2 * weight
-   breakfast = total_cal * 0.173
-   lunch = total_cal * 0.466
-   dinner = total_cal * 0.24
-   breakfast_protein_cal = breakfast * 0.30
-   breakfast_carb_cal = breakfast * 0.50
-   breakfast_carb = breakfast_carb_cal % 4
-   lunch_protein_cal = lunch * 0.30
-   lunch_carb_cal = lunch * 0.50
-   lunch_carb = lunch_carb_cal % 4
-   dinner_protein_cal = dinner * 0.30
-   dinner_carb_cal = dinner * 0.50
-   dinner_carb = dinner_carb_cal % 4
-   breakfast_food_df = breakfast_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < breakfast_protein_cal) & (df['Fiber (g)'] <= breakfast_carb) & (df['Calories (kcal)'] < breakfast_carb_cal)]
-   lunch_food_df = lunch_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < lunch_protein_cal) & (df['Fiber (g)'] <= lunch_carb) & (df['Calories (kcal)'] < lunch_carb_cal)]
-   dinner_food_df = dinner_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < dinner_protein_cal) & (df['Fiber (g)'] <= dinner_carb) & (df['Calories (kcal)'] < dinner_carb_cal)]
+def diet_Cut_NonVeg(total_cal, weight):
+    protein = 2 * weight
+    breakfast = total_cal * 0.173
+    lunch = total_cal * 0.466
+    dinner = total_cal * 0.24
+    breakfast_protein_cal = breakfast * 0.30
+    breakfast_carb_cal = breakfast * 0.50
+    breakfast_carb = breakfast_carb_cal % 4
+    lunch_protein_cal = lunch * 0.30
+    lunch_carb_cal = lunch * 0.50
+    lunch_carb = lunch_carb_cal % 4
+    dinner_protein_cal = dinner * 0.30
+    dinner_carb_cal = dinner * 0.50
+    dinner_carb = dinner_carb_cal % 4
+    
+    breakfast_food_df = breakfast_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < breakfast_protein_cal) & (df['Fiber (g)'] <= breakfast_carb) & (df['Calories (kcal)'] < breakfast_carb_cal)]
+    lunch_food_df = lunch_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < lunch_protein_cal) & (df['Fiber (g)'] <= lunch_carb) & (df['Calories (kcal)'] < lunch_carb_cal)]
+    dinner_food_df = dinner_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < dinner_protein_cal) & (df['Fiber (g)'] <= dinner_carb) & (df['Calories (kcal)'] < dinner_carb_cal)]
+    
+    # Remove duplicates based on Food_Item
+    breakfast_food_df = breakfast_food_df.drop_duplicates(subset=['Food_Item'])
+    lunch_food_df = lunch_food_df.drop_duplicates(subset=['Food_Item'])
+    dinner_food_df = dinner_food_df.drop_duplicates(subset=['Food_Item'])
+    
+    return {
+        'breakfast': breakfast_food_df.to_dict('records'),
+        'lunch': lunch_food_df.to_dict('records'),
+        'dinner': dinner_food_df.to_dict('records')
+    }
 
-   print("----------------------------------------------------------------------")
-   print(breakfast_food_df)
-   print("----------------------------------------------------------------------") 
-   print(lunch_food_df)
-   print("----------------------------------------------------------------------")
-   print(dinner_food_df)
-   print("----------------------------------------------------------------------")
-   print("Thanks for using Diet_Forge!")
+def diet_Cut_Veg(total_cal, weight):
+    protein = 2 * weight
+    breakfast = total_cal * 0.173
+    lunch = total_cal * 0.466
+    dinner = total_cal * 0.24
+    breakfast_protein_cal = breakfast * 0.30
+    breakfast_carb_cal = breakfast * 0.50
+    breakfast_carb = breakfast_carb_cal % 4
+    lunch_protein_cal = lunch * 0.30
+    lunch_carb_cal = lunch * 0.50
+    lunch_carb = lunch_carb_cal % 4
+    dinner_protein_cal = dinner * 0.30
+    dinner_carb_cal = dinner * 0.50
+    dinner_carb = dinner_carb_cal % 4
+    
+    breakfast_food_df = breakfast_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < breakfast_protein_cal) & (df['Fiber (g)'] <= breakfast_carb) & (df['Calories (kcal)'] < breakfast_carb_cal) & (df['Category'] != 'Meat')]
+    lunch_food_df = lunch_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < lunch_protein_cal) & (df['Fiber (g)'] <= lunch_carb) & (df['Calories (kcal)'] < lunch_carb_cal) & (df['Category'] != 'Meat')]
+    dinner_food_df = dinner_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < dinner_protein_cal) & (df['Fiber (g)'] <= dinner_carb) & (df['Calories (kcal)'] < dinner_carb_cal) & (df['Category'] != 'Meat')]
+    
+    # Remove duplicates based on Food_Item
+    breakfast_food_df = breakfast_food_df.drop_duplicates(subset=['Food_Item'])
+    lunch_food_df = lunch_food_df.drop_duplicates(subset=['Food_Item'])
+    dinner_food_df = dinner_food_df.drop_duplicates(subset=['Food_Item'])
+    
+    return {
+        'breakfast': breakfast_food_df.to_dict('records'),
+        'lunch': lunch_food_df.to_dict('records'),
+        'dinner': dinner_food_df.to_dict('records')
+    }
 
-def diet_Bulk_Veg(total_cal,weight):
-   protein = 2 * weight
-   breakfast = total_cal * 0.173
-   lunch = total_cal * 0.466
-   dinner = total_cal * 0.24
-   breakfast_protein_cal = breakfast * 0.30
-   breakfast_carb_cal = breakfast * 0.50
-   breakfast_carb = breakfast_carb_cal % 4
-   lunch_protein_cal = lunch * 0.30
-   lunch_carb_cal = lunch * 0.50
-   lunch_carb = lunch_carb_cal % 4
-   dinner_protein_cal = dinner * 0.30
-   dinner_carb_cal = dinner * 0.50
-   dinner_carb = dinner_carb_cal % 4
-   breakfast_food_df = breakfast_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < breakfast_protein_cal) & (df['Fiber (g)'] <= breakfast_carb) & (df['Calories (kcal)'] < breakfast_carb_cal) & (df['Category'] != 'Meat')]
-   lunch_food_df = lunch_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < lunch_protein_cal) & (df['Fiber (g)'] <= lunch_carb) & (df['Calories (kcal)'] < lunch_carb_cal) & (df['Category'] != 'Meat')]
-   dinner_food_df = dinner_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < dinner_protein_cal) & (df['Fiber (g)'] <= dinner_carb) & (df['Calories (kcal)'] < dinner_carb_cal) & (df['Category'] != 'Meat')]
+def calculate_bmr(height, weight, age, gender):
+    if gender == 'M':
+        return (10 * weight) + (6.25 * height) - (5 * age) + 5
+    elif gender == 'F':
+        return (10 * weight) + (6.25 * height) - (5 * age) - 161
+    return 0
 
-   print("----------------------------------------------------------------------")
-   print(breakfast_food_df)
-   print("----------------------------------------------------------------------") 
-   print(lunch_food_df)
-   print("----------------------------------------------------------------------")
-   print(dinner_food_df)
-   print("----------------------------------------------------------------------")
-   print("Thanks for using Diet_Forge!")
+def calculate_calories(bmr, activity_level):
+    activity_multipliers = {
+        'Sedentary': 1.20,
+        'Lightly': 1.375,
+        'Moderately': 1.55,
+        'Very': 1.725,
+        'Super': 1.9
+    }
+    return bmr * activity_multipliers.get(activity_level, 1.0)
 
-def diet_Cut_NonVeg(total_cal,weight):
-   protein = 2 * weight
-   breakfast = total_cal * 0.173
-   lunch = total_cal * 0.466
-   dinner = total_cal * 0.24
-   breakfast_protein_cal = breakfast * 0.30
-   breakfast_carb_cal = breakfast * 0.50
-   breakfast_carb = breakfast_carb_cal % 4
-   lunch_protein_cal = lunch * 0.30
-   lunch_carb_cal = lunch * 0.50
-   lunch_carb = lunch_carb_cal % 4
-   dinner_protein_cal = dinner * 0.30
-   dinner_carb_cal = dinner * 0.50
-   dinner_carb = dinner_carb_cal % 4
-   breakfast_food_df = breakfast_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < breakfast_protein_cal) & (df['Fiber (g)'] <= breakfast_carb) & (df['Calories (kcal)'] < breakfast_carb_cal)]
-   lunch_food_df = lunch_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < lunch_protein_cal) & (df['Fiber (g)'] <= lunch_carb) & (df['Calories (kcal)'] < lunch_carb_cal)]
-   dinner_food_df = dinner_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < dinner_protein_cal) & (df['Fiber (g)'] <= dinner_carb) & (df['Calories (kcal)'] < dinner_carb_cal)]
+@app.route('/')
+def home():
+    return render_template('index.html')
 
-   print("----------------------------------------------------------------------")
-   print(breakfast_food_df)
-   print("----------------------------------------------------------------------") 
-   print(lunch_food_df)
-   print("----------------------------------------------------------------------")
-   print(dinner_food_df)
-   print("----------------------------------------------------------------------")
-   print("Thanks for using Diet_Forge!")
+@app.route('/calculate', methods=['POST'])
+def calculate():
+    try:
+        data = request.get_json()
+        weight = float(data['weight'])
+        height = float(data['height'])
+        age = int(data['age'])
+        gender = data['gender']
+        activity = data['activity']
+        is_vegetarian = data['is_vegetarian'] == 'Y'
+        diet_type = data['diet_type']
 
-def diet_Cut_Veg(total_cal,weight):
-   protein = 2 * weight
-   breakfast = total_cal * 0.173
-   lunch = total_cal * 0.466
-   dinner = total_cal * 0.24
-   breakfast_protein_cal = breakfast * 0.30
-   breakfast_carb_cal = breakfast * 0.50
-   breakfast_carb = breakfast_carb_cal % 4
-   lunch_protein_cal = lunch * 0.30
-   lunch_carb_cal = lunch * 0.50
-   lunch_carb = lunch_carb_cal % 4
-   dinner_protein_cal = dinner * 0.30
-   dinner_carb_cal = dinner * 0.50
-   dinner_carb = dinner_carb_cal % 4
-   breakfast_food_df = breakfast_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < breakfast_protein_cal) & (df['Fiber (g)'] <= breakfast_carb) & (df['Calories (kcal)'] < breakfast_carb_cal) & (df['Category'] != 'Meat')]
-   lunch_food_df = lunch_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < lunch_protein_cal) & (df['Fiber (g)'] <= lunch_carb) & (df['Calories (kcal)'] < lunch_carb_cal) & (df['Category'] != 'Meat')]
-   dinner_food_df = dinner_df.loc[(df['Protein (g)'] <= protein) & (df['Calories (kcal)'] < dinner_protein_cal) & (df['Fiber (g)'] <= dinner_carb) & (df['Calories (kcal)'] < dinner_carb_cal) & (df['Category'] != 'Meat')]
+        if age < 15:
+            return jsonify({'error': 'Too young for a diet'}), 400
 
-   print("----------------------------------------------------------------------")
-   print(breakfast_food_df)
-   print("----------------------------------------------------------------------") 
-   print(lunch_food_df)
-   print("----------------------------------------------------------------------")
-   print(dinner_food_df)
-   print("----------------------------------------------------------------------")
-   print("Thanks for using Diet_Forge!")
+        bmr = calculate_bmr(height, weight, age, gender)
+        base_calories = calculate_calories(bmr, activity)
 
-def calcount(BMR, active, weight, veg):
-   total_cal = 0
-   bulk_cal = 0
-   cut_cal = 0
-   try:
-      if(active == "Sedentary" or active == "Sed"):
-         total_cal = BMR * 1.20
-      elif(active == "Lightly" or active == "L"):
-         total_cal = BMR * 1.375
-      elif(active == "Moderately" or active == "M"):
-         total_cal = BMR * 1.55
-      elif(active == "Very" or active == "V"):
-         total_cal = BMR * 1.725
-      elif(active == "Super" or active == "Sup"):
-         total_cal = BMR * 1.9
-      else :
-         total_cal = BMR
-   except:
-      print("U have entered something wrong")
+        if diet_type == 'Bulk':
+            total_calories = base_calories + 500
+            if is_vegetarian:
+                meal_plan = diet_Bulk_Veg(total_calories, weight)
+            else:
+                meal_plan = diet_Bulk_NonVeg(total_calories, weight)
+        elif diet_type == 'Cut':
+            total_calories = base_calories - 500
+            if is_vegetarian:
+                meal_plan = diet_Cut_Veg(total_calories, weight)
+            else:
+                meal_plan = diet_Cut_NonVeg(total_calories, weight)
+        else:  # Normal
+            total_calories = base_calories
+            if is_vegetarian:
+                meal_plan = diet_Normal_Veg(total_calories, weight)
+            else:
+                meal_plan = diet_Normal_NonVeg(total_calories, weight)
 
-   print(f"Your calorie intake should be {math.trunc(total_cal)}")
-   bulk_cal = total_cal + 500
-   cut_cal = total_cal - 500
-   print(f"Your bulking calorie should be {math.trunc(bulk_cal)}")
-   print(f"Your cutting calorie should be {math.trunc(cut_cal)}")
+        return jsonify({
+            'calories': {
+                'base': math.trunc(base_calories),
+                'bulk': math.trunc(base_calories + 500),
+                'cut': math.trunc(base_calories - 500)
+            },
+            'meal_plan': meal_plan
+        })
 
-   choice = input("You want a normal diet or bulking diet or cutting diet? ").capitalize()
-   if(choice == 'Normal' or choice == 'N'):
-      if(veg == 'Y'):
-         diet_Normal_Veg(total_cal,weight)
-      elif(veg == 'N'):
-        diet_Normal_NonVeg(total_cal,weight)
-      else:
-         print("Enter correctly")
-   elif(choice == 'Bulk' or choice == 'B'):
-      if(veg == 'Y'):
-         diet_Bulk_Veg(bulk_cal,weight)
-      elif(veg == 'N'):
-        diet_Bulk_NonVeg(bulk_cal,weight)
-      else:
-         print("Enter correctly") 
-   elif(choice == 'Cut' or choice == 'C'):
-      if(veg == 'Y'):
-         diet_Cut_Veg(cut_cal,weight)
-      elif(veg == 'N'):
-        diet_Cut_NonVeg(cut_cal,weight)
-      else:
-         print("Enter correctly") 
-   else:
-      print("Choose correctly")
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
-def checker(height,weight,age,gender,veg,active):
-   if(gender == 'M'):
-      BMR = (10 * weight) + (6.25 * height) - (5 * age )+ 5
-   elif(gender == 'F'):
-      BMR = (10 * weight) +( 6.25 * height) - (5 * age )- 161
-   else:
-      print('Enter correctly ')
-
-   if(age<15):
-      print("Too young for a diet")
-   else:
-      calcount(BMR,active,weight,veg)
-
-def main():
-   name = input("Enter your name: ")
-   try:
-      weight = int(input("Enter your weight(in kg): "))
-      height = int(input("Enter your height(in cm): "))
-      age = int(input("Enter your age: "))
-      gender = input("Enter your gender(M for male & F for female): ").capitalize()
-      active = input("How active are you(Sedentary, Lightly, Moderately, Very, Super)? ").capitalize()
-      veg = input("Are you a vegetarian or not(Y for yes, N for no)? ").capitalize()
-   except ValueError:
-      print("U have entered in wrong format.")
-
-   checker(height,weight,age,gender,veg,active)
-
-if __name__ == "__main__":
-    main()
+if __name__ == '__main__':
+    app.run(debug=True)

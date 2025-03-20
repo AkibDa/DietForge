@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DietForge - Your Personalized Diet Planner</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .container {
+            max-width: 800px;
+            margin-top: 2rem;
+        }
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .card-header {
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 15px 15px 0 0 !important;
+            padding: 1.5rem;
+        }
+        .form-control {
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            padding: 0.75rem;
+        }
+        .form-control:focus {
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25);
+        }
+        .btn-primary {
+            background-color: #4CAF50;
+            border-color: #4CAF50;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+        }
+        .btn-primary:hover {
+            background-color: #45a049;
+            border-color: #45a049;
+        }
+        .results-section {
+            display: none;
+            margin-top: 2rem;
+        }
+        .meal-card {
+            margin-bottom: 1rem;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .meal-header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 0.75rem;
+        }
+        .table {
+            margin-bottom: 0;
+        }
+        .table th {
+            background-color: #f8f9fa;
+        }
+        .calories-card {
+            background-color: #e8f5e9;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header text-center">
+                <h1 class="mb-0"><i class="fas fa-utensils me-2"></i>DietForge</h1>
+                <p class="mb-0">Your Personalized Diet Planner</p>
+            </div>
+            <div class="card-body">
+                <form id="dietForm">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="weight" class="form-label">Weight (kg)</label>
+                            <input type="number" class="form-control" id="weight" required step="0.1">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="height" class="form-label">Height (cm)</label>
+                            <input type="number" class="form-control" id="height" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="age" class="form-label">Age</label>
+                            <input type="number" class="form-control" id="age" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="gender" class="form-label">Gender</label>
+                            <select class="form-select" id="gender" required>
+                                <option value="">Select gender</option>
+                                <option value="M">Male</option>
+                                <option value="F">Female</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="activity" class="form-label">Activity Level</label>
+                            <select class="form-select" id="activity" required>
+                                <option value="">Select activity level</option>
+                                <option value="Sedentary">Sedentary</option>
+                                <option value="Lightly">Lightly Active</option>
+                                <option value="Moderately">Moderately Active</option>
+                                <option value="Very">Very Active</option>
+                                <option value="Super">Super Active</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="is_vegetarian" class="form-label">Diet Type</label>
+                            <select class="form-select" id="is_vegetarian" required>
+                                <option value="">Select diet type</option>
+                                <option value="Y">Vegetarian</option>
+                                <option value="N">Non-Vegetarian</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label for="diet_type" class="form-label">Diet Goal</label>
+                            <select class="form-select" id="diet_type" required>
+                                <option value="">Select diet goal</option>
+                                <option value="Normal">Normal</option>
+                                <option value="Bulk">Bulking</option>
+                                <option value="Cut">Cutting</option>
+                            </select>
+                        </div>
+                        <div class="col-12 text-center">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-calculator me-2"></i>Calculate Diet Plan
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="results" class="results-section">
+            <div class="calories-card">
+                <h4 class="mb-3">Recommended Calorie Intake</h4>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <h5>Base Calories</h5>
+                            <p id="baseCalories" class="h3 mb-0">-</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <h5>Bulking Calories</h5>
+                            <p id="bulkCalories" class="h3 mb-0">-</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <h5>Cutting Calories</h5>
+                            <p id="cutCalories" class="h3 mb-0">-</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="meal-card">
+                <div class="meal-header">
+                    <h5 class="mb-0"><i class="fas fa-sun me-2"></i>Breakfast</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Food Item</th>
+                                <th>Calories</th>
+                                <th>Protein</th>
+                                <th>Fiber</th>
+                            </tr>
+                        </thead>
+                        <tbody id="breakfastTable"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="meal-card">
+                <div class="meal-header">
+                    <h5 class="mb-0"><i class="fas fa-cloud-sun me-2"></i>Lunch</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Food Item</th>
+                                <th>Calories</th>
+                                <th>Protein</th>
+                                <th>Fiber</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lunchTable"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="meal-card">
+                <div class="meal-header">
+                    <h5 class="mb-0"><i class="fas fa-moon me-2"></i>Dinner</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Food Item</th>
+                                <th>Calories</th>
+                                <th>Protein</th>
+                                <th>Fiber</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dinnerTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('dietForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                weight: parseFloat(document.getElementById('weight').value),
+                height: parseFloat(document.getElementById('height').value),
+                age: parseInt(document.getElementById('age').value),
+                gender: document.getElementById('gender').value,
+                activity: document.getElementById('activity').value,
+                is_vegetarian: document.getElementById('is_vegetarian').value,
+                diet_type: document.getElementById('diet_type').value
+            };
+
+            try {
+                const response = await fetch('/calculate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Update calories
+                    document.getElementById('baseCalories').textContent = data.calories.base;
+                    document.getElementById('bulkCalories').textContent = data.calories.bulk;
+                    document.getElementById('cutCalories').textContent = data.calories.cut;
+
+                    // Update meal tables
+                    updateMealTable('breakfastTable', data.meal_plan.breakfast);
+                    updateMealTable('lunchTable', data.meal_plan.lunch);
+                    updateMealTable('dinnerTable', data.meal_plan.dinner);
+
+                    // Show results section
+                    document.getElementById('results').style.display = 'block';
+                } else {
+                    alert(data.error || 'An error occurred');
+                }
+            } catch (error) {
+                alert('An error occurred while calculating your diet plan');
+                console.error(error);
+            }
+        });
+
+        function updateMealTable(tableId, meals) {
+            const table = document.getElementById(tableId);
+            table.innerHTML = '';
+
+            meals.forEach(meal => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${meal['Food_Item']}</td>
+                    <td>${Math.round(meal['Calories (kcal)'])}</td>
+                    <td>${Math.round(meal['Protein (g)'])}g</td>
+                    <td>${Math.round(meal['Fiber (g)'])}g</td>
+                `;
+                table.appendChild(row);
+            });
+        }
+    </script>
+</body>
+</html> 
