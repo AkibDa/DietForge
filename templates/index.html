@@ -10,29 +10,55 @@
         body {
             background-color: #f8f9fa;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-bottom: 2rem;
         }
         .container {
             max-width: 1000px;
-            margin-top: 2rem;
+            margin-top: 1rem;
+            padding: 0 1rem;
+        }
+        @media (max-width: 768px) {
+            .container {
+                margin-top: 0.5rem;
+                padding: 0 0.5rem;
+            }
         }
         .card {
             border: none;
             border-radius: 15px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
         }
         .card-header {
             background-color: #4CAF50;
             color: white;
             border-radius: 15px 15px 0 0 !important;
-            padding: 1.5rem;
+            padding: 1.25rem;
         }
-        .form-control {
+        @media (max-width: 768px) {
+            .card-header {
+                padding: 1rem;
+            }
+            .card-header h1 {
+                font-size: 1.75rem;
+            }
+            .card-header p {
+                font-size: 0.9rem;
+            }
+        }
+        .form-control, .form-select {
             border-radius: 8px;
             border: 1px solid #ced4da;
             padding: 0.75rem;
+            font-size: 0.95rem;
         }
-        .form-control:focus {
+        @media (max-width: 768px) {
+            .form-control, .form-select {
+                padding: 0.6rem;
+                font-size: 0.9rem;
+            }
+        }
+        .form-control:focus, .form-select:focus {
             border-color: #4CAF50;
             box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25);
         }
@@ -42,6 +68,14 @@
             padding: 0.75rem 2rem;
             border-radius: 8px;
             font-weight: 600;
+            width: 100%;
+            margin-top: 1rem;
+        }
+        @media (max-width: 768px) {
+            .btn-primary {
+                padding: 0.6rem 1.5rem;
+                font-size: 0.95rem;
+            }
         }
         .btn-primary:hover {
             background-color: #45a049;
@@ -56,8 +90,23 @@
             color: white;
             border-radius: 15px;
             padding: 2rem;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        @media (max-width: 768px) {
+            .calories-card {
+                padding: 1.25rem;
+            }
+            .calories-card h4 {
+                font-size: 1.25rem;
+                margin-bottom: 1rem;
+            }
+            .calories-card .h3 {
+                font-size: 2rem;
+            }
+            .calories-card h5 {
+                font-size: 1rem;
+            }
         }
         .calories-card h4 {
             color: white;
@@ -78,7 +127,7 @@
             background: white;
             border-radius: 15px;
             overflow: hidden;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         .meal-header {
@@ -88,6 +137,17 @@
             display: flex;
             align-items: center;
             gap: 1rem;
+        }
+        @media (max-width: 768px) {
+            .meal-header {
+                padding: 0.75rem;
+            }
+            .meal-header h5 {
+                font-size: 1.1rem;
+            }
+            .meal-header i {
+                font-size: 1.25rem;
+            }
         }
         .meal-header h5 {
             margin: 0;
@@ -103,6 +163,21 @@
             background-color: #f8f9fa;
             font-weight: 600;
             color: #4CAF50;
+            white-space: nowrap;
+        }
+        @media (max-width: 768px) {
+            .table th, .table td {
+                padding: 0.5rem;
+                font-size: 0.9rem;
+            }
+            .table th:first-child,
+            .table td:first-child {
+                padding-left: 1rem;
+            }
+            .table th:last-child,
+            .table td:last-child {
+                padding-right: 1rem;
+            }
         }
         .table td {
             vertical-align: middle;
@@ -114,15 +189,38 @@
             border-radius: 20px;
             font-size: 0.9rem;
             font-weight: 500;
+            white-space: nowrap;
+        }
+        @media (max-width: 768px) {
+            .nutrition-badge {
+                padding: 0.2rem 0.5rem;
+                font-size: 0.85rem;
+            }
         }
         .food-item {
             font-weight: 500;
             color: #333;
         }
+        @media (max-width: 768px) {
+            .food-item {
+                font-size: 0.9rem;
+            }
+        }
         .loading {
             display: none;
             text-align: center;
             padding: 2rem;
+        }
+        @media (max-width: 768px) {
+            .loading {
+                padding: 1.5rem;
+            }
+            .loading i {
+                font-size: 2.5rem;
+            }
+            .loading p {
+                font-size: 0.95rem;
+            }
         }
         .loading i {
             font-size: 3rem;
@@ -140,6 +238,38 @@
             padding: 1rem;
             border-radius: 8px;
             margin-top: 1rem;
+            font-size: 0.95rem;
+        }
+        @media (max-width: 768px) {
+            .error-message {
+                padding: 0.75rem;
+                font-size: 0.9rem;
+            }
+        }
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        @media (max-width: 768px) {
+            .form-label {
+                font-size: 0.9rem;
+            }
+        }
+        .row {
+            margin-bottom: 1rem;
+        }
+        @media (max-width: 768px) {
+            .row {
+                margin-bottom: 0.75rem;
+            }
+        }
+        .col-md-6 {
+            margin-bottom: 1rem;
+        }
+        @media (max-width: 768px) {
+            .col-md-6 {
+                margin-bottom: 0.75rem;
+            }
         }
     </style>
 </head>
@@ -201,7 +331,7 @@
                                 <option value="Cut">Cutting</option>
                             </select>
                         </div>
-                        <div class="col-12 text-center">
+                        <div class="col-12">
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-calculator me-2"></i>Calculate Diet Plan
                             </button>

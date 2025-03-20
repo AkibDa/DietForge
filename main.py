@@ -7,158 +7,200 @@ app = Flask(__name__)
 
 # Load and process the diet data
 diet_data = pd.read_csv('Data/diet.csv')
-breakfast_data = diet_data[diet_data['Meal'] == 'Breakfast']
-lunch_data = diet_data[diet_data['Meal'] == 'Lunch']
-dinner_data = diet_data[diet_data['Meal'] == 'Dinner']
+breakfast_data = diet_data[diet_data['Meal_Type'] == 'Breakfast']
+lunch_data = diet_data[diet_data['Meal_Type'] == 'Lunch']
+dinner_data = diet_data[diet_data['Meal_Type'] == 'Dinner']
 
-def diet_Normal_NonVeg(total_calories, weight):
-    breakfast = breakfast_data[
-        (breakfast_data['Protein (g)'] >= 0.3 * weight) &
-        (breakfast_data['Calories (kcal)'] <= 0.3 * total_calories) &
-        (breakfast_data['Fiber (g)'] >= 5)
-    ].drop_duplicates(subset=['Food_Item']).head(3).to_dict('records')
-
-    lunch = lunch_data[
-        (lunch_data['Protein (g)'] >= 0.4 * weight) &
-        (lunch_data['Calories (kcal)'] <= 0.4 * total_calories) &
-        (lunch_data['Fiber (g)'] >= 8)
-    ].drop_duplicates(subset=['Food_Item']).head(3).to_dict('records')
-
-    dinner = dinner_data[
-        (dinner_data['Protein (g)'] >= 0.3 * weight) &
-        (dinner_data['Calories (kcal)'] <= 0.3 * total_calories) &
-        (dinner_data['Fiber (g)'] >= 5)
-    ].drop_duplicates(subset=['Food_Item']).head(3).to_dict('records')
-
+def diet_Normal_NonVeg(weight, height, age, gender, activity_level):
+    # Calculate BMR and calories
+    bmr = calculate_bmr(gender, weight, height, age)
+    calories = calculate_calories(bmr, activity_level)
+    
+    # Filter data for each meal type
+    breakfast_data = diet_data[diet_data['Meal_Type'] == 'Breakfast']
+    lunch_data = diet_data[diet_data['Meal_Type'] == 'Lunch']
+    dinner_data = diet_data[diet_data['Meal_Type'] == 'Dinner']
+    
+    # Remove duplicates based on Food_Item
+    breakfast_data = breakfast_data.drop_duplicates(subset=['Food_Item'])
+    lunch_data = lunch_data.drop_duplicates(subset=['Food_Item'])
+    dinner_data = dinner_data.drop_duplicates(subset=['Food_Item'])
+    
+    # Calculate meal plans
+    breakfast_calories = calories * 0.3
+    lunch_calories = calories * 0.4
+    dinner_calories = calories * 0.3
+    
+    # Get meal options
+    breakfast = breakfast_data[breakfast_data['Calories (kcal)'] <= breakfast_calories].head(3)
+    lunch = lunch_data[lunch_data['Calories (kcal)'] <= lunch_calories].head(3)
+    dinner = dinner_data[dinner_data['Calories (kcal)'] <= dinner_calories].head(3)
+    
     return {
-        'breakfast': breakfast,
-        'lunch': lunch,
-        'dinner': dinner
+        'calories': calories,
+        'breakfast': breakfast.to_dict('records'),
+        'lunch': lunch.to_dict('records'),
+        'dinner': dinner.to_dict('records')
     }
 
-def diet_Normal_Veg(total_calories, weight):
-    breakfast = breakfast_data[
-        (breakfast_data['Protein (g)'] >= 0.25 * weight) &
-        (breakfast_data['Calories (kcal)'] <= 0.3 * total_calories) &
-        (breakfast_data['Fiber (g)'] >= 5)
-    ].drop_duplicates(subset=['Food_Item']).head(3).to_dict('records')
-
-    lunch = lunch_data[
-        (lunch_data['Protein (g)'] >= 0.35 * weight) &
-        (lunch_data['Calories (kcal)'] <= 0.4 * total_calories) &
-        (lunch_data['Fiber (g)'] >= 8)
-    ].drop_duplicates(subset=['Food_Item']).head(3).to_dict('records')
-
-    dinner = dinner_data[
-        (dinner_data['Protein (g)'] >= 0.25 * weight) &
-        (dinner_data['Calories (kcal)'] <= 0.3 * total_calories) &
-        (dinner_data['Fiber (g)'] >= 5)
-    ].drop_duplicates(subset=['Food_Item']).head(3).to_dict('records')
-
+def diet_Normal_Veg(weight, height, age, gender, activity_level):
+    # Calculate BMR and calories
+    bmr = calculate_bmr(gender, weight, height, age)
+    calories = calculate_calories(bmr, activity_level)
+    
+    # Filter data for each meal type
+    breakfast_data = diet_data[diet_data['Meal_Type'] == 'Breakfast']
+    lunch_data = diet_data[diet_data['Meal_Type'] == 'Lunch']
+    dinner_data = diet_data[diet_data['Meal_Type'] == 'Dinner']
+    
+    # Remove duplicates based on Food_Item
+    breakfast_data = breakfast_data.drop_duplicates(subset=['Food_Item'])
+    lunch_data = lunch_data.drop_duplicates(subset=['Food_Item'])
+    dinner_data = dinner_data.drop_duplicates(subset=['Food_Item'])
+    
+    # Calculate meal plans
+    breakfast_calories = calories * 0.3
+    lunch_calories = calories * 0.4
+    dinner_calories = calories * 0.3
+    
+    # Get meal options
+    breakfast = breakfast_data[breakfast_data['Calories (kcal)'] <= breakfast_calories].head(3)
+    lunch = lunch_data[lunch_data['Calories (kcal)'] <= lunch_calories].head(3)
+    dinner = dinner_data[dinner_data['Calories (kcal)'] <= dinner_calories].head(3)
+    
     return {
-        'breakfast': breakfast,
-        'lunch': lunch,
-        'dinner': dinner
+        'calories': calories,
+        'breakfast': breakfast.to_dict('records'),
+        'lunch': lunch.to_dict('records'),
+        'dinner': dinner.to_dict('records')
     }
 
-def diet_Bulk_NonVeg(total_calories, weight):
-    breakfast = breakfast_data[
-        (breakfast_data['Protein (g)'] >= 0.4 * weight) &
-        (breakfast_data['Calories (kcal)'] <= 0.3 * total_calories) &
-        (breakfast_data['Fiber (g)'] >= 5)
-    ].drop_duplicates(subset=['Food_Item']).head(3).to_dict('records')
-
-    lunch = lunch_data[
-        (lunch_data['Protein (g)'] >= 0.5 * weight) &
-        (lunch_data['Calories (kcal)'] <= 0.4 * total_calories) &
-        (lunch_data['Fiber (g)'] >= 8)
-    ].drop_duplicates(subset=['Food_Item']).head(3).to_dict('records')
-
-    dinner = dinner_data[
-        (dinner_data['Protein (g)'] >= 0.4 * weight) &
-        (dinner_data['Calories (kcal)'] <= 0.3 * total_calories) &
-        (dinner_data['Fiber (g)'] >= 5)
-    ].drop_duplicates(subset=['Food_Item']).head(3).to_dict('records')
-
+def diet_Bulk_NonVeg(weight, height, age, gender, activity_level):
+    # Calculate BMR and calories
+    bmr = calculate_bmr(gender, weight, height, age)
+    calories = calculate_calories(bmr, activity_level) * 1.2  # 20% more calories for bulking
+    
+    # Filter data for each meal type
+    breakfast_data = diet_data[diet_data['Meal_Type'] == 'Breakfast']
+    lunch_data = diet_data[diet_data['Meal_Type'] == 'Lunch']
+    dinner_data = diet_data[diet_data['Meal_Type'] == 'Dinner']
+    
+    # Remove duplicates based on Food_Item
+    breakfast_data = breakfast_data.drop_duplicates(subset=['Food_Item'])
+    lunch_data = lunch_data.drop_duplicates(subset=['Food_Item'])
+    dinner_data = dinner_data.drop_duplicates(subset=['Food_Item'])
+    
+    # Calculate meal plans
+    breakfast_calories = calories * 0.3
+    lunch_calories = calories * 0.4
+    dinner_calories = calories * 0.3
+    
+    # Get meal options
+    breakfast = breakfast_data[breakfast_data['Calories (kcal)'] <= breakfast_calories].head(3)
+    lunch = lunch_data[lunch_data['Calories (kcal)'] <= lunch_calories].head(3)
+    dinner = dinner_data[dinner_data['Calories (kcal)'] <= dinner_calories].head(3)
+    
     return {
-        'breakfast': breakfast,
-        'lunch': lunch,
-        'dinner': dinner
+        'calories': calories,
+        'breakfast': breakfast.to_dict('records'),
+        'lunch': lunch.to_dict('records'),
+        'dinner': dinner.to_dict('records')
     }
 
-def diet_Bulk_Veg(total_calories, weight):
-    breakfast = breakfast_data[
-        (breakfast_data['Protein (g)'] >= 0.35 * weight) &
-        (breakfast_data['Calories (kcal)'] <= 0.3 * total_calories) &
-        (breakfast_data['Fiber (g)'] >= 5)
-    ].drop_duplicates(subset=['Food_Item']).head(3).to_dict('records')
-
-    lunch = lunch_data[
-        (lunch_data['Protein (g)'] >= 0.45 * weight) &
-        (lunch_data['Calories (kcal)'] <= 0.4 * total_calories) &
-        (lunch_data['Fiber (g)'] >= 8)
-    ].drop_duplicates(subset=['Food_Item']).head(3).to_dict('records')
-
-    dinner = dinner_data[
-        (dinner_data['Protein (g)'] >= 0.35 * weight) &
-        (dinner_data['Calories (kcal)'] <= 0.3 * total_calories) &
-        (dinner_data['Fiber (g)'] >= 5)
-    ].drop_duplicates(subset=['Food_Item']).head(3).to_dict('records')
-
+def diet_Bulk_Veg(weight, height, age, gender, activity_level):
+    # Calculate BMR and calories
+    bmr = calculate_bmr(gender, weight, height, age)
+    calories = calculate_calories(bmr, activity_level) * 1.2  # 20% more calories for bulking
+    
+    # Filter data for each meal type
+    breakfast_data = diet_data[diet_data['Meal_Type'] == 'Breakfast']
+    lunch_data = diet_data[diet_data['Meal_Type'] == 'Lunch']
+    dinner_data = diet_data[diet_data['Meal_Type'] == 'Dinner']
+    
+    # Remove duplicates based on Food_Item
+    breakfast_data = breakfast_data.drop_duplicates(subset=['Food_Item'])
+    lunch_data = lunch_data.drop_duplicates(subset=['Food_Item'])
+    dinner_data = dinner_data.drop_duplicates(subset=['Food_Item'])
+    
+    # Calculate meal plans
+    breakfast_calories = calories * 0.3
+    lunch_calories = calories * 0.4
+    dinner_calories = calories * 0.3
+    
+    # Get meal options
+    breakfast = breakfast_data[breakfast_data['Calories (kcal)'] <= breakfast_calories].head(3)
+    lunch = lunch_data[lunch_data['Calories (kcal)'] <= lunch_calories].head(3)
+    dinner = dinner_data[dinner_data['Calories (kcal)'] <= dinner_calories].head(3)
+    
     return {
-        'breakfast': breakfast,
-        'lunch': lunch,
-        'dinner': dinner
+        'calories': calories,
+        'breakfast': breakfast.to_dict('records'),
+        'lunch': lunch.to_dict('records'),
+        'dinner': dinner.to_dict('records')
     }
 
-def diet_Cut_NonVeg(total_calories, weight):
-    breakfast = breakfast_data[
-        (breakfast_data['Protein (g)'] >= 0.35 * weight) &
-        (breakfast_data['Calories (kcal)'] <= 0.3 * total_calories) &
-        (breakfast_data['Fiber (g)'] >= 8)
-    ].drop_duplicates(subset=['Food_Item']).head(3).to_dict('records')
-
-    lunch = lunch_data[
-        (lunch_data['Protein (g)'] >= 0.45 * weight) &
-        (lunch_data['Calories (kcal)'] <= 0.4 * total_calories) &
-        (lunch_data['Fiber (g)'] >= 10)
-    ].drop_duplicates(subset=['Food_Item']).head(3).to_dict('records')
-
-    dinner = dinner_data[
-        (dinner_data['Protein (g)'] >= 0.35 * weight) &
-        (dinner_data['Calories (kcal)'] <= 0.3 * total_calories) &
-        (dinner_data['Fiber (g)'] >= 8)
-    ].drop_duplicates(subset=['Food_Item']).head(3).to_dict('records')
-
+def diet_Cut_NonVeg(weight, height, age, gender, activity_level):
+    # Calculate BMR and calories
+    bmr = calculate_bmr(gender, weight, height, age)
+    calories = calculate_calories(bmr, activity_level) * 0.8  # 20% fewer calories for cutting
+    
+    # Filter data for each meal type
+    breakfast_data = diet_data[diet_data['Meal_Type'] == 'Breakfast']
+    lunch_data = diet_data[diet_data['Meal_Type'] == 'Lunch']
+    dinner_data = diet_data[diet_data['Meal_Type'] == 'Dinner']
+    
+    # Remove duplicates based on Food_Item
+    breakfast_data = breakfast_data.drop_duplicates(subset=['Food_Item'])
+    lunch_data = lunch_data.drop_duplicates(subset=['Food_Item'])
+    dinner_data = dinner_data.drop_duplicates(subset=['Food_Item'])
+    
+    # Calculate meal plans
+    breakfast_calories = calories * 0.3
+    lunch_calories = calories * 0.4
+    dinner_calories = calories * 0.3
+    
+    # Get meal options
+    breakfast = breakfast_data[breakfast_data['Calories (kcal)'] <= breakfast_calories].head(3)
+    lunch = lunch_data[lunch_data['Calories (kcal)'] <= lunch_calories].head(3)
+    dinner = dinner_data[dinner_data['Calories (kcal)'] <= dinner_calories].head(3)
+    
     return {
-        'breakfast': breakfast,
-        'lunch': lunch,
-        'dinner': dinner
+        'calories': calories,
+        'breakfast': breakfast.to_dict('records'),
+        'lunch': lunch.to_dict('records'),
+        'dinner': dinner.to_dict('records')
     }
 
-def diet_Cut_Veg(total_calories, weight):
-    breakfast = breakfast_data[
-        (breakfast_data['Protein (g)'] >= 0.3 * weight) &
-        (breakfast_data['Calories (kcal)'] <= 0.3 * total_calories) &
-        (breakfast_data['Fiber (g)'] >= 8)
-    ].drop_duplicates(subset=['Food_Item']).head(3).to_dict('records')
-
-    lunch = lunch_data[
-        (lunch_data['Protein (g)'] >= 0.4 * weight) &
-        (lunch_data['Calories (kcal)'] <= 0.4 * total_calories) &
-        (lunch_data['Fiber (g)'] >= 10)
-    ].drop_duplicates(subset=['Food_Item']).head(3).to_dict('records')
-
-    dinner = dinner_data[
-        (dinner_data['Protein (g)'] >= 0.3 * weight) &
-        (dinner_data['Calories (kcal)'] <= 0.3 * total_calories) &
-        (dinner_data['Fiber (g)'] >= 8)
-    ].drop_duplicates(subset=['Food_Item']).head(3).to_dict('records')
-
+def diet_Cut_Veg(weight, height, age, gender, activity_level):
+    # Calculate BMR and calories
+    bmr = calculate_bmr(gender, weight, height, age)
+    calories = calculate_calories(bmr, activity_level) * 0.8  # 20% fewer calories for cutting
+    
+    # Filter data for each meal type
+    breakfast_data = diet_data[diet_data['Meal_Type'] == 'Breakfast']
+    lunch_data = diet_data[diet_data['Meal_Type'] == 'Lunch']
+    dinner_data = diet_data[diet_data['Meal_Type'] == 'Dinner']
+    
+    # Remove duplicates based on Food_Item
+    breakfast_data = breakfast_data.drop_duplicates(subset=['Food_Item'])
+    lunch_data = lunch_data.drop_duplicates(subset=['Food_Item'])
+    dinner_data = dinner_data.drop_duplicates(subset=['Food_Item'])
+    
+    # Calculate meal plans
+    breakfast_calories = calories * 0.3
+    lunch_calories = calories * 0.4
+    dinner_calories = calories * 0.3
+    
+    # Get meal options
+    breakfast = breakfast_data[breakfast_data['Calories (kcal)'] <= breakfast_calories].head(3)
+    lunch = lunch_data[lunch_data['Calories (kcal)'] <= lunch_calories].head(3)
+    dinner = dinner_data[dinner_data['Calories (kcal)'] <= dinner_calories].head(3)
+    
     return {
-        'breakfast': breakfast,
-        'lunch': lunch,
-        'dinner': dinner
+        'calories': calories,
+        'breakfast': breakfast.to_dict('records'),
+        'lunch': lunch.to_dict('records'),
+        'dinner': dinner.to_dict('records')
     }
 
 def calculate_bmr(gender, weight, height, age):
@@ -216,19 +258,19 @@ def calculate():
         # Get meal plan based on diet type and preference
         if diet_type == 'Normal':
             if is_vegetarian == 'Y':
-                meal_plan = diet_Normal_Veg(calories['base'], weight)
+                meal_plan = diet_Normal_Veg(weight, height, age, gender, activity)
             else:
-                meal_plan = diet_Normal_NonVeg(calories['base'], weight)
+                meal_plan = diet_Normal_NonVeg(weight, height, age, gender, activity)
         elif diet_type == 'Bulk':
             if is_vegetarian == 'Y':
-                meal_plan = diet_Bulk_Veg(calories['bulk'], weight)
+                meal_plan = diet_Bulk_Veg(weight, height, age, gender, activity)
             else:
-                meal_plan = diet_Bulk_NonVeg(calories['bulk'], weight)
+                meal_plan = diet_Bulk_NonVeg(weight, height, age, gender, activity)
         else:  # Cut
             if is_vegetarian == 'Y':
-                meal_plan = diet_Cut_Veg(calories['cut'], weight)
+                meal_plan = diet_Cut_Veg(weight, height, age, gender, activity)
             else:
-                meal_plan = diet_Cut_NonVeg(calories['cut'], weight)
+                meal_plan = diet_Cut_NonVeg(weight, height, age, gender, activity)
 
         return jsonify({
             'calories': calories,
