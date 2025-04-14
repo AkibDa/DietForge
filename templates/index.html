@@ -9,7 +9,39 @@
     <link rel="stylesheet" href="./static/styles.css">
 </head>
 <body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">HealthCare</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Link</a>
+              </li>
+          </div>
+        </div>
+      </nav>
+    <div class="jumbotron text-center">
+        <h1 class="display-4">Welcome to DietForge!</h1>
+        <p class="lead">Your personalized diet planner for a healthier you.</p>
+        <hr class="my-4">
+    </div>
+    <br>
     <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h2>Why Choose DietForge?</h2>
+                <p>DietForge is designed to help you achieve your health goals with personalized meal plans and calorie tracking. Whether you're looking to lose weight, gain muscle, or maintain a healthy lifestyle, we've got you covered.</p>
+            </div>
+            <div class="col-md-6">
+                <img src="./static/healthy-food.jpg" alt="Healthy Food" class="img-fluid rounded">
+            </div>
+        </div>
         <div class="card">
             <div class="card-header text-center">
                 <h1 class="mb-0"><i class="fas fa-utensils me-2"></i>DietForge</h1>
@@ -169,6 +201,10 @@
             </div>
         </div>
     </div>
+
+    <footer>
+        <p>&copy; 2025 DietForge | All Rights Reserved</p>
+    </footer>
 
     <script src="./static/script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

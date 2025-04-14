@@ -262,3 +262,9 @@ body {
       margin-bottom: 0.75rem;
   }
 }
+footer {
+  text-align: center;
+  margin-top: 40px;
+  font-size: 0.9rem;
+  color: #888;
+}
